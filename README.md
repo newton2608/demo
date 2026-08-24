@@ -1,2 +1,2 @@
-# demo
+# platform-engineering-demo
 new demo
