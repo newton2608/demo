@@ -1,0 +1,41 @@
+name: Weather App CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate app files exist
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          test -f server.js
+
+      - name: Start local web server
+        run: |
+          node server.js > server.log 2>&1 &
+          sleep 10
+
+      - name: Smoke test the app
+        run: |
+          curl -I http://localhost:8000
+          curl -sSf http://localhost:8000 | grep -qi "Weather"
